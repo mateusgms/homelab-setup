@@ -1,0 +1,18 @@
+# Sensitive files
+*.json
+*.pem
+cert.pem
+*-secret.yaml
+
+# Credentials
+credentials-file
+*credentials*
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,18 @@
+# Cloudflare Tunnel Configuration
+tunnel: YOUR_TUNNEL_ID
+credentials-file: /etc/cloudflared/YOUR_TUNNEL_ID.json
+
+ingress:
+  - hostname: grafana-homelab.yourdomain.com
+    service: http://MASTER_IP:80
+    originRequest:
+      httpHostHeader: grafana.homelab.yourdomain.com
+  - hostname: argocd-homelab.yourdomain.com
+    service: http://MASTER_IP:80
+    originRequest:
+      httpHostHeader: argocd.homelab.yourdomain.com
+  - hostname: prometheus-homelab.yourdomain.com
+    service: http://MASTER_IP:80
+    originRequest:
+      httpHostHeader: prometheus.homelab.yourdomain.com
+  - service: http_status:404
