@@ -119,3 +119,117 @@ homelab-setup/
 ## 📝 License
 
 MIT License
+
+## 📖 Detailed Documentation
+
+### Deployment Guides
+
+- **[Deploying Applications](docs/DEPLOYING-APPS.md)** - Complete guide to deploying apps (kubectl, ArgoCD, GitOps)
+- **[CI/CD Pipeline](docs/CICD-PIPELINE.md)** - GitHub Actions workflows and automation
+- **[Helm Deployments](docs/HELM-DEPLOYMENTS.md)** - Using Helm charts in your application repos
+
+### Key Topics Covered
+
+#### Application Deployment
+- Manual deployment with kubectl
+- GitOps with ArgoCD
+- Helm chart management
+- Multi-environment strategies
+
+#### CI/CD Automation
+- GitHub Actions workflows
+- Docker image building
+- Automated testing
+- ArgoCD integration
+- Multi-environment pipelines
+
+#### Helm Best Practices
+- Chart structure in app repos
+- Values management per environment
+- CI/CD with Helm
+- ArgoCD + Helm integration
+- Secrets management
+
+## 🚢 Deployment Workflow Summary
+
+### Option 1: Manual with kubectl
+```bash
+kubectl apply -f manifests/
+```
+
+### Option 2: GitOps with ArgoCD
+1. Push manifests to Git
+2. Create ArgoCD Application
+3. ArgoCD auto-syncs changes
+
+### Option 3: Helm + ArgoCD (Recommended)
+1. Store Helm chart in app repo (`./helm/`)
+2. GitHub Actions builds image & updates values
+3. ArgoCD syncs from Helm chart
+4. Automatic deployment per environment
+
+## 🔄 Complete Deployment Flow
+
+```
+1. Developer pushes code
+   ↓
+2. GitHub Actions triggers
+   ↓
+3. Run tests & build Docker image
+   ↓
+4. Push image to registry (GHCR)
+   ↓
+5. Update Helm values or manifests
+   ↓
+6. ArgoCD detects changes
+   ↓
+7. ArgoCD syncs to Kubernetes
+   ↓
+8. Application deployed! 🎉
+```
+
+## 🎯 Quick Start Deployment
+
+### Deploy Your First App
+
+```bash
+# 1. Clone template
+git clone https://github.com/yourusername/my-app.git
+cd my-app
+
+# 2. Add Helm chart
+cp -r /path/to/homelab-setup/manifests/examples/helm-example ./helm
+
+# 3. Customize values
+vim helm/values-production.yaml
+
+# 4. Create ArgoCD application
+kubectl apply -f - <<EOF
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/yourusername/my-app
+    path: helm
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-production.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: my-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+EOF
+
+# 5. Watch deployment
+argocd app get my-app --watch
+```
+
